@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Shopping Checklist</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#fff8e1,#ffe0b2);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:450px;
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+.logo{
+    text-align:center;
+    font-size:60px;
+}
+
+h2{
+    text-align:center;
+    color:#ff6f00;
+    margin:10px 0 20px;
+}
+
+.input-area{
+    display:flex;
+    gap:10px;
+}
+
+input{
+    flex:1;
+    padding:12px;
+    border:2px solid #ffb74d;
+    border-radius:10px;
+    outline:none;
+    font-size:16px;
+}
+
+input:focus{
+    border-color:#ff9800;
+}
+
+.add-btn{
+    background:#ff9800;
+    color:white;
+    border:none;
+    padding:12px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.add-btn:hover{
+    background:#f57c00;
+}
+
+ul{
+    list-style:none;
+    margin-top:20px;
+}
+
+li{
+    background:#fff3e0;
+    margin-bottom:10px;
+    padding:12px;
+    border-radius:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.item-text{
+    font-size:17px;
+}
+
+.completed{
+    text-decoration:line-through;
+    color:gray;
+}
+
+.actions button{
+    border:none;
+    padding:8px 10px;
+    margin-left:5px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.complete-btn{
+    background:#4caf50;
+    color:white;
+}
+
+.delete-btn{
+    background:#f44336;
+    color:white;
+}
+
+.footer{
+    text-align:center;
+    margin-top:15px;
+    color:#888;
+    font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">🛒</div>
+
+    <h2>Smart Shopping Checklist</h2>
+
+    <div class="input-area">
+        <input type="text" id="itemInput" placeholder="Enter shopping item">
+        <button class="add-btn" onclick="addItem()">Add</button>
+    </div>
+
+    <ul id="list"></ul>
+
+    <div class="footer">
+        Organize your shopping efficiently ✨
+    </div>
+
+</div>
+
+<script>
+
+let items = JSON.parse(localStorage.getItem("shoppingItems")) || [];
+
+function saveItems(){
+    localStorage.setItem("shoppingItems", JSON.stringify(items));
+}
+
+function renderItems(){
+
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    items.forEach((item,index)=>{
+
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+            <span class="item-text ${item.completed ? 'completed' : ''}">
+                ${item.text}
+            </span>
+
+            <div class="actions">
+                <button class="complete-btn"
+                onclick="toggleItem(${index})">
+                ✓
+                </button>
+
+                <button class="delete-btn"
+                onclick="deleteItem(${index})">
+                🗑
+                </button>
+            </div>
+        `;
+
+        list.appendChild(li);
+    });
+}
+
+function addItem(){
+
+    const input = document.getElementById("itemInput");
+
+    if(input.value.trim() === ""){
+        alert("Please enter an item");
+        return;
+    }
+
+    items.push({
+        text: input.value,
+        completed:false
+    });
+
+    saveItems();
+    renderItems();
+
+    input.value = "";
+}
+
+function toggleItem(index){
+
+    items[index].completed =
+    !items[index].completed;
+
+    saveItems();
+    renderItems();
+}
+
+function deleteItem(index){
+
+    items.splice(index,1);
+
+    saveItems();
+    renderItems();
+}
+
+renderItems();
+
+</script>
+
+</body>
+</html>
